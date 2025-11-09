@@ -3,34 +3,56 @@
 {% block content %}
     <h2>Manajemen User</h2>
 
-    <h3>Tambah User Baru</h3>
-    <form action="/users/add" method="POST">
-        <label>Username:</label>
-        <input type="text" name="username" required>
-        <label>Email:</label>
-        <input type="email" name="email" required>
-        <button type="submit">Tambah</button>
-    </form>
+    {% if user_to_edit %}
+        <h3>Update User: {{ user_to_edit.username }}</h3>
+        <form action="{{ url_for('update_user', id=user_to_edit.id) }}" method="POST">
+            <label>Username:</label><br>
+            <input type="text" name="username" value="{{ user_to_edit.username }}" required><br>
+            
+            <label>Email:</label><br>
+            <input type="email" name="email" value="{{ user_to_edit.email }}" required><br><br>
+            
+            <button type="submit">Update</button>
+            <a href="{{ url_for('list_users') }}">Batal</a>
+        </form>
+    {% else %}
+        <h3>Tambah User Baru</h3>
+        <form action="{{ url_for('add_user') }}" method="POST">
+            <label>Username:</label><br>
+            <input type="text" name="username" required><br>
+            
+            <label>Email:</label><br>
+            <input type="email" name="email" required><br><br>
+            
+            <button type="submit">Tambah</button>
+        </form>
+    {% endif %}
 
     <hr>
 
     <h3>Daftar User</h3>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Aksi</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.id }}</td>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>
-                <a href="/users/delete/{{ user.id }}">Hapus</a>
+    <table border="1" cellpadding="5" cellspacing="0" style="width:100%;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th style="width: 100px;">Aksi Anda</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <a href="{{ url_for('edit_user_page', id=user.id) }}">Edit</a>
+                    |
+                    <a href="{{ url_for('delete_user', id=user.id) }}" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
                 </td>
-        </tr>
-        {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 {% endblock %}

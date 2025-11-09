@@ -1,13 +1,15 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+import time
+from sqlalchemy.exc import OperationalError
 
 app = Flask(__name__)
 
 # --- KONFIGURASI DATABASE ---
 DB_USER = os.environ.get('MYSQL_USER', 'root')
 DB_PASS = os.environ.get('MYSQL_PASSWORD', 'rootpass')
-DB_HOST = os.environ.get('MYSQL_HOST', 'db') 
+DB_HOST = os.environ.get('MYSQL_HOST', 'db')
 DB_NAME = os.environ.get('MYSQL_DATABASE', 'mydatabase')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
@@ -17,14 +19,43 @@ db = SQLAlchemy(app)
 
 # --- MODEL DATABASE ---
 
+# FIX 1: Menambahkan class User(db.Model) yang hilang
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.username}>'
+
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text, nullable=True) # Tambahkan description
+    description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f'<Product {self.name}>'
+
+# FIX 2: Pindahkan db.create_all() ke sini
+# Ini akan membuat tabel saat aplikasi dimulai, di luar blok __main__
+with app.app_context():
+    # db.create_all()
+    connected = False
+    retries = 5
+    while not connected and retries > 0:
+        try:
+            with app.app_context():
+                db.create_all()
+            print("Database connection successful!")
+            connected = True
+        except OperationalError:
+            print("Database not ready, retrying in 2 seconds...")
+            retries -= 1
+            time.sleep(2) # Tunggu 2 detik sebelum mencoba lagi
+
+    if not connected:
+        print("Could not connect to database after several retries. Exiting.")
 
 # --- ROUTES (URL) ---
 
@@ -34,12 +65,13 @@ def dashboard():
     return render_template('dashboard.html')
 
 # --- CRUD User ---
-
+# FIX 3: Route ini sekarang akan berfungsi karena 'User' sudah didefinisikan
 @app.route('/users')
 def list_users():
     """Menampilkan semua user (Read)."""
     users = User.query.all()
-    return render_template('users.html', users=users)
+    # MODIFIKASI: Tambahkan 'user_to_edit=None'
+    return render_template('users.html', users=users, user_to_edit=None)
 
 @app.route('/users/add', methods=['POST'])
 def add_user():
@@ -51,6 +83,13 @@ def add_user():
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('list_users'))
+    
+@app.route('/users/edit/<int:id>')
+def edit_user_page(id):
+    """Menampilkan halaman user dengan form edit terisi (Halaman Update)."""
+    user_to_edit = User.query.get_or_404(id)
+    all_users = User.query.all()
+    return render_template('users.html', users=all_users, user_to_edit=user_to_edit)
 
 @app.route('/users/update/<int:id>', methods=['POST'])
 def update_user(id):
@@ -119,8 +158,6 @@ def delete_product(id):
     return redirect(url_for('list_products'))
 
 
-
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # Hapus db.create_all() dari sini
     app.run(debug=True, host='0.0.0.0')
