@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h2>Manajemen User</h2>
+
+    <h3>Tambah User Baru</h3>
+    <form action="/users/add" method="POST">
+        <label>Username:</label>
+        <input type="text" name="username" required>
+        <label>Email:</label>
+        <input type="email" name="email" required>
+        <button type="submit">Tambah</button>
+    </form>
+
+    <hr>
+
+    <h3>Daftar User</h3>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Aksi</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                <a href="/users/delete/{{ user.id }}">Hapus</a>
+                </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

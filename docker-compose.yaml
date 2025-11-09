@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Service 1: Aplikasi Web (Flask)
+  web:
+    build: .  
+    ports:
+      - "5000:5000" 
+    volumes:
+      - .:/app 
+    environment:
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_HOST=db       
+      - MYSQL_DATABASE=mydatabase
+      - FLASK_ENV=development 
+      - FLASK_APP=app.py
+    depends_on:
+      - db 
+
+  # Service 2: Database (MySQL)
+  db:
+    image: mysql:8.0 
+    environment:
+      # Variabel ini digunakan MySQL untuk setup awal
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      # Ini memenuhi syarat "Data database disimpan di volume"
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
