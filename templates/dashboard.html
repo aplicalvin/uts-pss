@@ -1,6 +1,48 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <h2>Selamat Datang di Dashboard</h2>
-    <p>Pilih menu di atas untuk mengelola User atau Produk.</p>
+    <div class="dashboard">
+        <h2>Selamat Datang di Dashboard</h2>
+        <p>Pilih menu di atas untuk mengelola <strong>User</strong> atau <strong>Produk</strong>.</p>
+
+        <div class="card-container">
+            <div class="card">
+                <h3>👤 Manajemen User</h3>
+                <p>Tambah, ubah, dan hapus data pengguna aplikasi.</p>
+                <a class="btn" href="{{ url_for('list_users') }}">Kelola User</a>
+            </div>
+            <div class="card">
+                <h3>📦 Manajemen Produk</h3>
+                <p>Atur data produk dengan mudah di sini.</p>
+                <a class="btn" href="{{ url_for('list_products') }}">Kelola Produk</a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .dashboard {
+            text-align: center;
+            padding: 20px;
+        }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .card {
+            background-color: #ecf9f7;
+            border: 1px solid #d0f0eb;
+            border-radius: 10px;
+            padding: 25px;
+            width: 300px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+    </style>
 {% endblock %}

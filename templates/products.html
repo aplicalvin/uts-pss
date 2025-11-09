@@ -3,48 +3,52 @@
 {% block content %}
     <h2>Manajemen Produk</h2>
 
-    {% if product_to_edit %}
-        <h3>Update Produk: {{ product_to_edit.name }}</h3>
-        <form action="{{ url_for('update_product', id=product_to_edit.id) }}" method="POST">
-            <label>Nama:</label><br>
-            <input type="text" name="name" value="{{ product_to_edit.name }}" required><br>
-            
-            <label>Deskripsi:</label><br>
-            <textarea name="description" rows="3">{{ product_to_edit.description }}</textarea><br>
-            
-            <label>Harga:</label><br>
-            <input type="number" name="price" value="{{ product_to_edit.price }}" required><br><br>
-            
-            <button type="submit">Update</button>
-            <a href="{{ url_for('list_products') }}">Batal</a>
-        </form>
-    {% else %}
-        <h3>Tambah Produk Baru</h3>
-        <form action="{{ url_for('add_product') }}" method="POST">
-            <label>Nama:</label><br>
-            <input type="text" name="name" required><br>
-            
-            <label>Deskripsi:</label><br>
-            <textarea name="description" rows="3"></textarea><br>
-            
-            <label>Harga:</label><br>
-            <input type="number" name="price" required><br><br>
-            
-            <button type="submit">Tambah</button>
-        </form>
-    {% endif %}
+    <div class="form-card">
+        {% if product_to_edit %}
+            <h3>✏️ Update Produk: {{ product_to_edit.name }}</h3>
+            <form action="{{ url_for('update_product', id=product_to_edit.id) }}" method="POST">
+                <label>Nama Produk</label>
+                <input type="text" name="name" value="{{ product_to_edit.name }}" required>
 
-    <hr>
+                <label>Deskripsi</label>
+                <textarea name="description" rows="3">{{ product_to_edit.description }}</textarea>
 
-    <h3>Daftar Produk</h3>
-    <table border="1" cellpadding="5" cellspacing="0" style="width:100%;">
+                <label>Harga</label>
+                <input type="number" name="price" value="{{ product_to_edit.price }}" required>
+
+                <div class="form-actions">
+                    <button type="submit">Update</button>
+                    <a class="btn-secondary" href="{{ url_for('list_products') }}">Batal</a>
+                </div>
+            </form>
+        {% else %}
+            <h3>➕ Tambah Produk Baru</h3>
+            <form action="{{ url_for('add_product') }}" method="POST">
+                <label>Nama Produk</label>
+                <input type="text" name="name" required>
+
+                <label>Deskripsi</label>
+                <textarea name="description" rows="3"></textarea>
+
+                <label>Harga</label>
+                <input type="number" name="price" required>
+
+                <div class="form-actions">
+                    <button type="submit">Tambah</button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+
+    <h3>📋 Daftar Produk</h3>
+    <table class="styled-table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Nama</th>
                 <th>Deskripsi</th>
                 <th>Harga</th>
-                <th style="width: 100px;">Aksi</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -53,14 +57,47 @@
                 <td>{{ product.id }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.description }}</td>
-                <td>{{ product.price }}</td>
+                <td>Rp {{ "{:,.0f}".format(product.price) }}</td>
                 <td>
-                    <a href="{{ url_for('edit_product_page', id=product.id) }}">Edit</a>
-                    |
-                    <a href="{{ url_for('delete_product', id=product.id) }}" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
+                    <a class="action-link edit" href="{{ url_for('edit_product_page', id=product.id) }}">Edit</a>
+                    <a class="action-link delete" href="{{ url_for('delete_product', id=product.id) }}" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <style>
+        /* gunakan style sama seperti users.html agar konsisten */
+        .form-card {
+            background-color: #ecf9f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        form label { display: block; margin-top: 10px; font-weight: bold; }
+        form input, form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .form-actions { margin-top: 15px; }
+        .btn-secondary {
+            background-color: #aaa;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .styled-table { width: 100%; border-collapse: collapse; }
+        .styled-table th, .styled-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .action-link { text-decoration: none; margin-right: 8px; font-weight: bold; }
+        .action-link.edit { color: #16a085; }
+        .action-link.delete { color: #e74c3c; }
+    </style>
 {% endblock %}

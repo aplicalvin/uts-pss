@@ -3,11 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <title>Aplikasi CRUD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Jost:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Stack+Sans+Headline:wght@200..700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; margin: 20px; }
-        nav { margin-bottom: 20px; background: #f0f0f0; padding: 10px; }
-        nav a { margin-right: 15px; text-decoration: none; font-weight: bold; }
-        .container { max-width: 800px; margin: auto; }
+
+        
+        :root {
+            --tosca: #1abc9c;
+            --tosca-dark: #16a085;
+            --bg-light: #f9f9f9;
+            --text-dark: #333;
+            --white: #fff;
+        }
+
+        body {
+            font-family: "Dela Gothic One", "Segoe UI", sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        nav {
+            background-color: var(--tosca);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.2s;
+            padding: 8px 14px;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: var(--tosca-dark);
+            transform: translateY(-2px);
+        }
+
+        h1, h2, h3 {
+            color: var(--tosca-dark);
+        }
+
+        main {
+            padding: 25px;
+        }
+
+        /* Optional: Style for tables and buttons if you use them later */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--tosca);
+            color: var(--white);
+        }
+
+        button, .btn {
+            background-color: var(--tosca);
+            color: var(--white);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover, .btn:hover {
+            background-color: var(--tosca-dark);
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 20px;
+            padding-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -17,8 +114,14 @@
             <a href="/users">Manajemen User</a>
             <a href="/products">Manajemen Produk</a>
         </nav>
-        
-        {% block content %}{% endblock %}
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer>
+            &copy; {{ current_year if current_year else '2025' }} Aplikasi CRUD by Kamu 💻
+        </footer>
     </div>
 </body>
 </html>

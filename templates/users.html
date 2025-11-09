@@ -3,41 +3,45 @@
 {% block content %}
     <h2>Manajemen User</h2>
 
-    {% if user_to_edit %}
-        <h3>Update User: {{ user_to_edit.username }}</h3>
-        <form action="{{ url_for('update_user', id=user_to_edit.id) }}" method="POST">
-            <label>Username:</label><br>
-            <input type="text" name="username" value="{{ user_to_edit.username }}" required><br>
-            
-            <label>Email:</label><br>
-            <input type="email" name="email" value="{{ user_to_edit.email }}" required><br><br>
-            
-            <button type="submit">Update</button>
-            <a href="{{ url_for('list_users') }}">Batal</a>
-        </form>
-    {% else %}
-        <h3>Tambah User Baru</h3>
-        <form action="{{ url_for('add_user') }}" method="POST">
-            <label>Username:</label><br>
-            <input type="text" name="username" required><br>
-            
-            <label>Email:</label><br>
-            <input type="email" name="email" required><br><br>
-            
-            <button type="submit">Tambah</button>
-        </form>
-    {% endif %}
+    <div class="form-card">
+        {% if user_to_edit %}
+            <h3>✏️ Update User: {{ user_to_edit.username }}</h3>
+            <form action="{{ url_for('update_user', id=user_to_edit.id) }}" method="POST">
+                <label>Username</label>
+                <input type="text" name="username" value="{{ user_to_edit.username }}" required>
 
-    <hr>
+                <label>Email</label>
+                <input type="email" name="email" value="{{ user_to_edit.email }}" required>
 
-    <h3>Daftar User</h3>
-    <table border="1" cellpadding="5" cellspacing="0" style="width:100%;">
+                <div class="form-actions">
+                    <button type="submit">Update</button>
+                    <a class="btn-secondary" href="{{ url_for('list_users') }}">Batal</a>
+                </div>
+            </form>
+        {% else %}
+            <h3>➕ Tambah User Baru</h3>
+            <form action="{{ url_for('add_user') }}" method="POST">
+                <label>Username</label>
+                <input type="text" name="username" required>
+
+                <label>Email</label>
+                <input type="email" name="email" required>
+
+                <div class="form-actions">
+                    <button type="submit">Tambah</button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+
+    <h3>📋 Daftar User</h3>
+    <table class="styled-table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Username</th>
                 <th>Email</th>
-                <th style="width: 100px;">Aksi Anda</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
@@ -47,12 +51,57 @@
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>
-                    <a href="{{ url_for('edit_user_page', id=user.id) }}">Edit</a>
-                    |
-                    <a href="{{ url_for('delete_user', id=user.id) }}" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
+                    <a class="action-link edit" href="{{ url_for('edit_user_page', id=user.id) }}">Edit</a>
+                    <a class="action-link delete" href="{{ url_for('delete_user', id=user.id) }}" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <style>
+        .form-card {
+            background-color: #ecf9f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        form label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        form input, form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        .form-actions {
+            margin-top: 15px;
+        }
+        .btn-secondary {
+            background-color: #aaa;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .styled-table th, .styled-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .action-link {
+            text-decoration: none;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        .action-link.edit { color: #16a085; }
+        .action-link.delete { color: #e74c3c; }
+    </style>
 {% endblock %}
